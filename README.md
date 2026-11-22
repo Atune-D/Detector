@@ -66,3 +66,7 @@ The full design (in Chinese) is in [docs/plan.md](docs/plan.md).
 - **Narrow rule coverage, by design.** Only registered rules can produce a contradiction: one inference template (alone vs. co-present), two negation containment/relation rules, and a short table of mutually exclusive states. Anything else ends up in *Needs review* or is not paired at all. "No candidates found" does not mean nothing was missed.
 - **Uncalibrated time policy.** The tolerances and vocabulary ranges ("evening", plus or minus 5, 20 or 30 minutes) are initial values that have not been calibrated against real data. Findings that depend on them are tagged.
 - **Extraction errors are possible.** The model can miss a statement, misclassify one, or anchor a time wrongly. Quotes are checked against the original text, but the meaning assigned to them is not.
+
+## License
+
+**Not for commercial use.** This code was written for an interview exercise and is shared for evaluation and reading only. You may run and review it; you may not use it, or any part of it, in a commercial product or service, or redistribute it, without the author's written permission. All rights reserved.
