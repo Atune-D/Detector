@@ -14,6 +14,8 @@ import type { ParsedTranscript, QAPair } from "./transcript";
 
 export const UNLOCATED = -1;
 
+const PLACE_OBJECT_PREDICATES: ReadonlySet<string> = new Set(["been_to", "entered", "passed_through"]);
+
 function minutes(clock: string): number {
   const [h, m] = clock.split(":");
   return Number(h) * 60 + Number(m);
@@ -117,8 +119,11 @@ export function toFacts(transcript: TranscriptId, parsed: ParsedTranscript, extr
       uncertaintyMarkers: start === UNLOCATED ? uncertaintyMarkers.map((m) => ({ ...m, span: { start: UNLOCATED, end: UNLOCATED } })) : uncertaintyMarkers,
       source: { transcript, qaId: x.qaId, question: qa?.question ?? "", quote: x.quote, start, end },
     };
-    const object = entity(x.object);
-    const location = entity(x.location);
+    // For place predicates the place IS the object ("been to the warehouse"). The model
+    // sometimes files it under location instead; move it so both sides compare the same slot.
+    const placeAsObject = PLACE_OBJECT_PREDICATES.has(x.action) && !x.object && !!x.location;
+    const object = entity(placeAsObject ? x.location : x.object);
+    const location = placeAsObject ? undefined : entity(x.location);
     if (object) fact.object = object;
     if (location) fact.location = location;
     if (x.occurrence) fact.occurrence = x.occurrence;

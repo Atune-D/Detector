@@ -6,7 +6,7 @@ import { analyzeRun, buildCandidates, failedRun, type Fact, type Nomination, typ
 import type { AnalyzeRequest, AnalyzeResponse } from "@/contract";
 import { LlmTransportError, type LlmClient, type LlmRequest } from "./llm/client";
 import { EXTRACTION_SYSTEM, NOMINATION_SYSTEM, extractionUserMessage, nominationUserMessage } from "./llm/prompts";
-import { extractionJsonSchema, extractionZod, findForbiddenKey, nominationJsonSchema, nominationZod } from "./llm/schema";
+import { extractionJsonSchema, extractionZod, findForbiddenKey, nominationJsonSchema, nominationZod, normalizeWireExtraction } from "./llm/schema";
 import { toFacts } from "./facts";
 import { parseTranscript, type ParsedTranscript } from "./transcript";
 import { isSampleRequest, replayClient } from "./replay";
@@ -61,7 +61,7 @@ async function extract(llm: LlmClient, id: "A" | "B", parsed: ParsedTranscript):
   const step = await callJson(
     llm,
     { purpose: id === "A" ? "extract_A" : "extract_B", system: EXTRACTION_SYSTEM, user: extractionUserMessage(parsed), schema: extractionJsonSchema(ids) },
-    (v) => zod.safeParse(v),
+    (v) => zod.safeParse(normalizeWireExtraction(v)),
   );
   return step.ok ? { ok: true, value: toFacts(id, parsed, step.value.facts) } : step;
 }

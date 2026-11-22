@@ -30,7 +30,8 @@ Who and what
   Relations: been_to, entered, passed_through (drove/walked through), knows (personally), knows_of (has heard of), met, saw, talked_with, bought.
   Do not merge different predicates: "never met him" (met) and "never heard of him" (knows_of) are two facts.
   One answer may yield several facts. If nothing fits the list, extract nothing for that statement — never force a predicate.
-- object / location: entity with id, label, granularity and partOf (ids of containing places, nearest first; [] when unknown). Use the id "home" for the deponent's own home. Name-based ids: snake_case of the full name ("hargrove_street_warehouse"); a street or neighbourhood as an area is "<name>_area" ("hargrove_street_area"), and a site on that street lists it in partOf. When an activity happens somewhere ("we waved in the parking lot"), also extract a separate location.place fact for where the deponent was.
+- For been_to, entered and passed_through the place goes in object (location stays null).
+- object / location: entity with id, label, granularity and partOf (ids of containing places, nearest first; [] when unknown). Use the id "home" for the deponent's own home. Name-based ids: snake_case of the full name ("hargrove_street_warehouse"); a street or neighbourhood as an area is "<name>_area" ("hargrove_street_area"), and a site on that street lists it in partOf. When an activity happens somewhere ("we waved in the parking lot"), also extract a separate location.place fact for where the deponent was. Likewise, when the deponent says they went out or left home ("I went out to get groceries"), also extract a separate location.out fact (stateSource explicit) with the same quote, time and uncertainty markers: being out is what the sentence states.
 
 Polarity and negation form — never flatten
 - polarity: "affirmative", "negative", or "undetermined" when the witness hedges the truth of the whole claim ("I don't think I met him", "I'm not sure I went").
@@ -45,10 +46,11 @@ Uncertainty markers
 - List hedges such as "I think", "maybe", "probably", "might", "or something", "I don't remember", with what they modify: "action" (the deponent's own act/state: "I think I went out"), "time" (the time expression: "maybe 10:30"), or "others_action" (someone else's act: "Tom might have seen me").
 
 Time — keep the words, resolve only what the text supports
+- time is one object: kind, original, date, from, to, markers, endDate, endMarkers, period. Fill the fields the kind uses; set the others to null (or [] for markers/endMarkers).
 - original: the time words as said (or as fixed by the question, e.g. "the evening of November 3rd").
 - instant: a moment; date (YYYY-MM-DD) + from/to "HH:MM". A single time has from = to; "10, maybe 10:30" is from "22:00" to "22:30". Times after midnight that belong to that night stay on the night's date with hours ≥ 24 ("midnight" = "24:00", "1am" = "25:00"). markers: each time qualifier verbatim with class "exact" (exactly, sharp), "approx" (around, about, roughly), "hedge" (maybe, I think, probably). No marker → [].
-- interval: a stretch with explicit clock bounds ("from 8 to 9").
-- period: a vocabulary period on a date; allowed period names: ${PERIODS.join(", ")}. "all evening" / "that evening" → period "evening". A phrase that refers back to a period the transcript has already established (e.g. "that night" in a follow-up to a question about "the evening of November 3rd") takes that period, with original recording the words as said. Otherwise a period not in that list ("late", "the night") → use unanchored rather than inventing one.
+- interval: a stretch with explicit clock bounds ("from 8 to 9"): date + from = start, endDate + to = end; markers qualify the start, endMarkers the end.
+- period: a vocabulary period on a date (date + period); allowed period names: ${PERIODS.join(", ")}. "all evening" / "that evening" → period "evening". A phrase that refers back to a period the transcript has already established (e.g. "that night" in a follow-up to a question about "the evening of November 3rd") takes that period, with original recording the words as said. Otherwise a period not in that list ("late", "the night") → use unanchored rather than inventing one.
 - all_time: claims about all time ("never", "ever", "always"). some_time: happened at an unspecified time ("I've driven through there"). unanchored: time is referred to but cannot be placed on the timeline ("before this whole thing started").
 - Resolve a date only when the transcript supports it: a deposition dated March 2023 asking about "November 3rd" refers to 2022-11-03. If the year cannot be determined, use unanchored.
 

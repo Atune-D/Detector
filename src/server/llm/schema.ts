@@ -154,20 +154,28 @@ const jEntity = obj({
   partOf: arr(str()),
 });
 const jTimeMarker = obj({ text: str("Marker word(s) copied verbatim from the quote."), class: enm(["exact", "approx", "hedge"]) });
-const jDate = { type: "string", format: "date" };
-const jClock = str('"HH:MM"; hours may go past 24 to stay on the night\'s date ("24:00" = midnight, "25:00" = 1am).');
-const jBound = obj({ date: jDate, time: jClock, markers: arr(jTimeMarker) });
+const jMarkers = arr({ $ref: "#/$defs/timeMarker" });
+const nullableStr = (description: string): Json => ({ type: ["string", "null"], description });
 
-const jTime: Json = {
-  anyOf: [
-    obj({ kind: { type: "string", const: "instant" }, original: str(), date: jDate, from: jClock, to: jClock, markers: arr(jTimeMarker) }),
-    obj({ kind: { type: "string", const: "interval" }, original: str(), start: jBound, end: jBound }),
-    obj({ kind: { type: "string", const: "period" }, original: str(), date: jDate, period: enm(PERIODS) }),
-    obj({ kind: { type: "string", const: "all_time" }, original: str() }),
-    obj({ kind: { type: "string", const: "some_time" }, original: str() }),
-    obj({ kind: { type: "string", const: "unanchored" }, original: str() }),
-  ],
-};
+export const TIME_KINDS = ["instant", "interval", "period", "all_time", "some_time", "unanchored"] as const;
+
+/**
+ * Time on the wire is one flat object with nullable fields, not a union of six
+ * shapes: the API rejected the union ("compiled grammar is too large").
+ * `normalizeWireExtraction` turns it back into the strict union that zod validates,
+ * so nothing downstream sees the flat form.
+ */
+const jTime: Json = obj({
+  kind: enm(TIME_KINDS),
+  original: str("The time words as said."),
+  date: nullableStr("YYYY-MM-DD. Required for instant, interval (start date) and period; null otherwise."),
+  from: nullableStr('"HH:MM". instant: earliest time; interval: start time; null otherwise. Hours may pass 24 ("24:00" = midnight, "25:00" = 1am).'),
+  to: nullableStr('"HH:MM". instant: latest time (same as from for a single time); interval: end time; null otherwise.'),
+  markers: { ...jMarkers, description: "instant: its time qualifiers; interval: qualifiers on the start bound; [] otherwise." },
+  endDate: nullableStr("interval only: end date YYYY-MM-DD; null otherwise."),
+  endMarkers: { ...jMarkers, description: "interval only: qualifiers on the end bound; [] otherwise." },
+  period: nullable(enm(PERIODS, "period only: the vocabulary period name; null otherwise.")),
+});
 
 const jStateSource: Json = {
   anyOf: [
@@ -179,27 +187,36 @@ const jStateSource: Json = {
   ],
 };
 
+const ref = (name: string): Json => ({ $ref: `#/$defs/${name}` });
+
+/**
+ * Shared sub-shapes are declared once under $defs and referenced. Inlining them at
+ * every use made the API reject the schema ("compiled grammar is too large").
+ */
 export function extractionJsonSchema(qaIds: readonly string[]): Json {
-  return obj({
-    facts: arr(
-      obj({
-        qaId: enm(qaIds),
-        quote: str("Verbatim substring of that Q/A's answer. Copy exactly; do not paraphrase or fix typos."),
-        person: str(),
-        action: enm(PREDICATES),
-        object: nullable(jEntity),
-        location: nullable(jEntity),
-        time: jTime,
-        polarity: enm(["affirmative", "negative", "undetermined"]),
-        negationForm: nullable(enm(["whole", "universal", "certainty"])),
-        stateSource: jStateSource,
-        uncertaintyMarkers: arr(obj({ text: str("Verbatim from the quote."), modifies: enm(["action", "time", "others_action"]) })),
-        occurrence: nullable({
-          anyOf: [obj({ kind: { type: "string", const: "definite" } }), obj({ kind: { type: "string", const: "ordinal" }, n: { type: "integer" } })],
+  return {
+    ...obj({
+      facts: arr(
+        obj({
+          qaId: enm(qaIds),
+          quote: str("Verbatim substring of that Q/A's answer. Copy exactly; do not paraphrase or fix typos."),
+          person: str(),
+          action: enm(PREDICATES),
+          object: nullable(ref("entity")),
+          location: nullable(ref("entity")),
+          time: ref("time"),
+          polarity: enm(["affirmative", "negative", "undetermined"]),
+          negationForm: nullable(enm(["whole", "universal", "certainty"])),
+          stateSource: jStateSource,
+          uncertaintyMarkers: arr(obj({ text: str("Verbatim from the quote."), modifies: enm(["action", "time", "others_action"]) })),
+          occurrence: nullable({
+            anyOf: [obj({ kind: { type: "string", const: "definite" } }), obj({ kind: { type: "string", const: "ordinal" }, n: { type: "integer" } })],
+          }),
         }),
-      }),
-    ),
-  });
+      ),
+    }),
+    $defs: { entity: jEntity, timeMarker: jTimeMarker, time: jTime },
+  };
 }
 
 export function nominationJsonSchema(factIdsA: readonly string[], factIdsB: readonly string[]): Json {
@@ -214,6 +231,42 @@ export function nominationJsonSchema(factIdsA: readonly string[], factIdsB: read
       }),
     ),
   });
+}
+
+/** Flat wire time (see jTime) -> the strict union shape. Anything not in the flat form is returned untouched for zod to judge. */
+function normalizeWireTime(t: unknown): unknown {
+  if (t === null || typeof t !== "object" || Array.isArray(t) || !("endMarkers" in t)) return t;
+  const w = t as Record<string, unknown>;
+  const { kind, original } = w;
+  switch (kind) {
+    case "instant":
+      return { kind, original, date: w.date, from: w.from, to: w.to ?? w.from, markers: w.markers };
+    case "interval":
+      return {
+        kind,
+        original,
+        start: { date: w.date, time: w.from, markers: w.markers },
+        end: { date: w.endDate ?? w.date, time: w.to, markers: w.endMarkers },
+      };
+    case "period":
+      return { kind, original, date: w.date, period: w.period };
+    case "all_time":
+    case "some_time":
+    case "unanchored":
+      return { kind, original };
+    default:
+      return t;
+  }
+}
+
+/** Convert an extraction response from the wire form to the form `extractionZod` validates. */
+export function normalizeWireExtraction(value: unknown): unknown {
+  if (value === null || typeof value !== "object" || !Array.isArray((value as { facts?: unknown }).facts)) return value;
+  const v = value as { facts: unknown[] };
+  return {
+    ...v,
+    facts: v.facts.map((f) => (f !== null && typeof f === "object" && !Array.isArray(f) && "time" in f ? { ...f, time: normalizeWireTime((f as { time: unknown }).time) } : f)),
+  };
 }
 
 /** Words in a field name that would carry a model-made judgement. Rejected anywhere in a response. */

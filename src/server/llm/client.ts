@@ -59,7 +59,10 @@ export function mapSdkError(err: unknown): LlmTransportError {
     return new LlmTransportError("upstream_missing", "Could not reach the model API.");
   }
   if (err instanceof Anthropic.APIError) {
-    return new LlmTransportError("upstream_missing", `The model API returned an error (status ${String(err.status ?? "unknown")}).`);
+    // The API's own message (never headers) says which parameter was rejected.
+    const body = err.error as { error?: { message?: unknown } } | undefined;
+    const apiMessage = typeof body?.error?.message === "string" ? ` ${body.error.message.slice(0, 300)}` : "";
+    return new LlmTransportError("upstream_missing", `The model API returned an error (status ${String(err.status ?? "unknown")}).${apiMessage}`);
   }
   return new LlmTransportError("upstream_missing", "The model call failed unexpectedly.");
 }
