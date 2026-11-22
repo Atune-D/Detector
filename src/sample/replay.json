@@ -1,0 +1,548 @@
+{
+  "_comment": "Hand-authored extraction of the bundled sample (src/sample/transcripts.ts), stored in the exact LLM response format so replay runs through the same validation and quote location as live mode. Not model output.",
+  "extract_A": {
+    "facts": [
+      {
+        "qaId": "Q1",
+        "quote": "I was at home all evening",
+        "person": "witness",
+        "action": "location.home",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "period",
+          "original": "all evening",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q1",
+        "quote": "I ordered pizza around 7pm",
+        "person": "witness",
+        "action": "activity.ordered_food",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "instant",
+          "original": "around 7pm",
+          "date": "2022-11-03",
+          "from": "19:00",
+          "to": "19:00",
+          "markers": [
+            {
+              "text": "around",
+              "class": "approx"
+            }
+          ]
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q1",
+        "quote": "watched TV",
+        "person": "witness",
+        "action": "activity.watching_tv",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "period",
+          "original": "the evening of November 3rd",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q2",
+        "quote": "No, I was alone",
+        "person": "witness",
+        "action": "company.alone",
+        "object": null,
+        "location": {
+          "id": "home",
+          "label": "home",
+          "granularity": "building",
+          "partOf": []
+        },
+        "time": {
+          "kind": "period",
+          "original": "that night",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q3",
+        "quote": "Around 10, maybe 10:30",
+        "person": "witness",
+        "action": "sleep_onset",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "instant",
+          "original": "Around 10, maybe 10:30",
+          "date": "2022-11-03",
+          "from": "22:00",
+          "to": "22:30",
+          "markers": [
+            {
+              "text": "Around",
+              "class": "approx"
+            },
+            {
+              "text": "maybe",
+              "class": "hedge"
+            }
+          ]
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "maybe",
+            "modifies": "time"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q4",
+        "quote": "No, never.",
+        "person": "witness",
+        "action": "been_to",
+        "object": {
+          "id": "hargrove_street_warehouse",
+          "label": "the Hargrove Street warehouse",
+          "granularity": "building",
+          "partOf": [
+            "hargrove_street_area"
+          ]
+        },
+        "location": null,
+        "time": {
+          "kind": "all_time",
+          "original": "never"
+        },
+        "polarity": "negative",
+        "negationForm": "whole",
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q6",
+        "quote": "No.",
+        "person": "witness",
+        "action": "met",
+        "object": {
+          "id": "daniel_cho",
+          "label": "Daniel Cho",
+          "granularity": "person",
+          "partOf": []
+        },
+        "location": null,
+        "time": {
+          "kind": "unanchored",
+          "original": "before November 3rd"
+        },
+        "polarity": "negative",
+        "negationForm": "whole",
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q6",
+        "quote": "I'd never heard of him before this whole thing started",
+        "person": "witness",
+        "action": "knows_of",
+        "object": {
+          "id": "daniel_cho",
+          "label": "Daniel Cho",
+          "granularity": "person",
+          "partOf": []
+        },
+        "location": null,
+        "time": {
+          "kind": "unanchored",
+          "original": "before this whole thing started"
+        },
+        "polarity": "negative",
+        "negationForm": "whole",
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      }
+    ]
+  },
+  "extract_B": {
+    "facts": [
+      {
+        "qaId": "Q1",
+        "quote": "I was home.",
+        "person": "witness",
+        "action": "location.home",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "period",
+          "original": "the evening of November 3rd",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q1",
+        "quote": "I think I went out briefly to get some groceries, maybe around 7:30",
+        "person": "witness",
+        "action": "location.out",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "instant",
+          "original": "maybe around 7:30",
+          "date": "2022-11-03",
+          "from": "19:30",
+          "to": "19:30",
+          "markers": [
+            {
+              "text": "maybe",
+              "class": "hedge"
+            },
+            {
+              "text": "around",
+              "class": "approx"
+            }
+          ]
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "I think",
+            "modifies": "action"
+          },
+          {
+            "text": "maybe",
+            "modifies": "time"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q1",
+        "quote": "I think I went out briefly to get some groceries, maybe around 7:30",
+        "person": "witness",
+        "action": "activity.bought_groceries",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "instant",
+          "original": "maybe around 7:30",
+          "date": "2022-11-03",
+          "from": "19:30",
+          "to": "19:30",
+          "markers": [
+            {
+              "text": "maybe",
+              "class": "hedge"
+            },
+            {
+              "text": "around",
+              "class": "approx"
+            }
+          ]
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "I think",
+            "modifies": "action"
+          },
+          {
+            "text": "maybe",
+            "modifies": "time"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q2",
+        "quote": "I might have done both",
+        "person": "witness",
+        "action": "activity.ordered_food",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "period",
+          "original": "the evening of November 3rd",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "might",
+            "modifies": "action"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q3",
+        "quote": "My neighbor, Tom, might have seen me. We waved or something in the parking lot.",
+        "person": "witness",
+        "action": "activity.waved",
+        "object": {
+          "id": "tom",
+          "label": "Tom",
+          "granularity": "person",
+          "partOf": []
+        },
+        "location": {
+          "id": "parking_lot",
+          "label": "the parking lot",
+          "granularity": "site",
+          "partOf": []
+        },
+        "time": {
+          "kind": "period",
+          "original": "that evening",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "might",
+            "modifies": "others_action"
+          },
+          {
+            "text": "or something",
+            "modifies": "action"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q3",
+        "quote": "We waved or something in the parking lot",
+        "person": "witness",
+        "action": "location.place",
+        "object": null,
+        "location": {
+          "id": "parking_lot",
+          "label": "the parking lot",
+          "granularity": "site",
+          "partOf": []
+        },
+        "time": {
+          "kind": "period",
+          "original": "that evening",
+          "date": "2022-11-03",
+          "period": "evening"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q4",
+        "quote": "It was late. Midnight maybe.",
+        "person": "witness",
+        "action": "sleep_onset",
+        "object": null,
+        "location": null,
+        "time": {
+          "kind": "instant",
+          "original": "Midnight maybe",
+          "date": "2022-11-03",
+          "from": "24:00",
+          "to": "24:00",
+          "markers": [
+            {
+              "text": "maybe",
+              "class": "hedge"
+            }
+          ]
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "maybe",
+            "modifies": "time"
+          }
+        ],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q5",
+        "quote": "I've driven through that part of town",
+        "person": "witness",
+        "action": "passed_through",
+        "object": {
+          "id": "hargrove_street_area",
+          "label": "that part of town (the Hargrove Street area)",
+          "granularity": "area",
+          "partOf": []
+        },
+        "location": null,
+        "time": {
+          "kind": "some_time",
+          "original": "I've driven through"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q6",
+        "quote": "I knew of him",
+        "person": "witness",
+        "action": "knows_of",
+        "object": {
+          "id": "daniel_cho",
+          "label": "Daniel Cho",
+          "granularity": "person",
+          "partOf": []
+        },
+        "location": null,
+        "time": {
+          "kind": "unanchored",
+          "original": "knew"
+        },
+        "polarity": "affirmative",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [],
+        "occurrence": null
+      },
+      {
+        "qaId": "Q6",
+        "quote": "I don't think I'd met him face to face",
+        "person": "witness",
+        "action": "met",
+        "object": {
+          "id": "daniel_cho",
+          "label": "Daniel Cho",
+          "granularity": "person",
+          "partOf": []
+        },
+        "location": null,
+        "time": {
+          "kind": "unanchored",
+          "original": "I'd met"
+        },
+        "polarity": "undetermined",
+        "negationForm": null,
+        "stateSource": {
+          "kind": "explicit"
+        },
+        "uncertaintyMarkers": [
+          {
+            "text": "I don't think",
+            "modifies": "action"
+          }
+        ],
+        "occurrence": null
+      }
+    ]
+  },
+  "nominate": {
+    "nominations": [
+      {
+        "factIdA": "A2",
+        "factIdB": "B3",
+        "kind": "state",
+        "templateId": null,
+        "reason": "Said he ordered pizza at home; later says he went out for groceries."
+      },
+      {
+        "factIdA": "A4",
+        "factIdB": "B5",
+        "kind": "template",
+        "templateId": "R_TEMPLATE_ALONE_VS_COPRESENT",
+        "reason": "Said he was alone; later says he waved to Tom, who may have seen him."
+      },
+      {
+        "factIdA": "A6",
+        "factIdB": "B8",
+        "kind": "negation",
+        "templateId": null,
+        "reason": "Denied ever being at the warehouse; later admits driving through that area."
+      }
+    ]
+  }
+}
